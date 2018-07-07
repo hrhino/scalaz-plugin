@@ -68,7 +68,12 @@ object Scalaz {
 
   val partestFramework = List(
     fork in Test := true,
-    javaOptions in Test += s"-Dpartest.root=${(sourceDirectory in Test in LocalProject("plugin")).value}",
+    javaOptions in Test ++= List(
+      s"-Dpartest.root=${(baseDirectory in LocalProject("tests")).value}",
+      s"-Dpartest.exec.in.process=true",
+      s"-Dscalaz.plugin.jar=${(packageBin in Compile in LocalProject("plugin")).value}",
+      "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+    ),
     testFrameworks += new TestFramework("scala.tools.partest.sbt.Framework"),
     definedTests in Test +=
       new sbt.TestDefinition(

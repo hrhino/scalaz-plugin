@@ -18,12 +18,19 @@ abstract class Definitions {
 
   lazy val ScalazPackage     = ensurePackage(rootMirror.RootClass, "scalaz")
   lazy val ScalazMetaPackage = ensurePackage(ScalazPackage.moduleClass, "meta")
+  lazy val InternalPackage   = ensurePackage(ScalazMetaPackage.moduleClass, "internal")
 
   // TODO
   lazy val TypeclassClass: ClassSymbol    = rootMirror.getRequiredClass("scalaz.meta.Typeclass")
   lazy val TypeclassType: Type            = TypeclassClass.tpe
   lazy val OrphanAttr: ClassSymbol        = rootMirror.getRequiredClass("scalaz.meta.orphan")
   lazy val EnableOrphansFlag: ClassSymbol = rootMirror.getRequiredClass("scalaz.meta.features.orphans")
+
+  lazy val RewriteMod  = rootMirror.getRequiredModule("scalaz.meta.rewrite")
+    def RewriteRuleCls = RewriteMod.moduleClass.info.decl(TypeName("Rule"))
+    def Rewrite_apply  = RewriteMod.moduleClass.info.decl(nme.apply)
+
+  lazy val RuleBodyAttr = RewriteMod.moduleClass.info.decl(TypeName("ruleBody"))
 
   lazy val MinimalAttr =
     rootMirror.getClassIfDefined(TypeName("scalaz.meta.minimal")).orElse {

@@ -20,3 +20,14 @@ object features {
 object enable {
   implicit lazy val orphans: features.orphans = features.orphans
 }
+
+object rewrite {
+  type Rule
+
+  @silent def apply[T](from: T, to: T): Rule = scala.sys.error("rewrite")
+
+  @silent
+  private[scalaz] final class ruleBody(body: Any) extends StaticAnnotation
+}
+
+
