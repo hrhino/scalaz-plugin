@@ -47,10 +47,17 @@ class MetaPlugin(val global: Global) extends Plugin { plugin =>
     val scalazDefns: Definitions { val global: plugin.global.type } = plugin.scalazDefns
   } with PolymorphicFunctionOptimizer
 
+  object adts extends {
+    val global: plugin.global.type                                  = plugin.global
+    val scalazDefns: Definitions { val global: plugin.global.type } = plugin.scalazDefns
+  } with ADTs
+  if (!options.contains("-adts")) adts.register()
+
   val components: List[PluginComponent] = List(
     "-minimal" -> sufficiency,
     "-orphans" -> orphanChecker,
-    "+polyopt" -> polymorphicFunctionOptimizer
+    "+polyopt" -> polymorphicFunctionOptimizer,
+    "-adts"    -> adts,
   ).flatMap {
     case (opt, phf) if opt.startsWith("-") =>
       if (options.contains(opt)) None else Some(phf)

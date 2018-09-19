@@ -46,6 +46,7 @@ abstract class Definitions {
 
       ScalazMetaPackage.moduleClass.info.decls.enter(ann)
     }
+  lazy val AdtAttr = rootMirror.getRequiredClass("scalaz.meta.data")
 
   private def ensurePackage(owner: Symbol, name: String): Symbol = {
     val emptyTempl = (

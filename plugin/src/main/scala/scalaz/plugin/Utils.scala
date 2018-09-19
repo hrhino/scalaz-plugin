@@ -83,6 +83,19 @@ trait Utils {
       m.typeParams.nonEmpty && m.paramLists.isEmpty
     } else false
 
+  def modifyParents(tp: Type)(mod: List[Type] => List[Type]): Type = tp match {
+    case ClassInfoType(parents, scope, sym) =>
+      val newParents = mod(parents)
+      if (newParents eq parents) tp else ClassInfoType(mod(parents), scope, sym)
+    case completer: analyzer.TypeCompleter =>
+      new analyzer.CompleterWrapper(completer) {
+        override def complete(sym: Symbol): Unit = {
+          super.complete(sym)
+          sym.setInfo(modifyParents(sym.info)(mod))
+        }
+      }
+  }
+
   /**
    *
    * @param tmpl
